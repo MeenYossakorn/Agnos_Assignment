@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { socket } from "../lib/socket";
 
 export default function PatientForm({ onSubmit }) {
   const [form, setForm] = useState({
