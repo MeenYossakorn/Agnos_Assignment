@@ -1,33 +1,49 @@
-
+"use client";
 import { useState } from "react";
-import { socket } from "..//lib/socket";
+import { useEffect } from "react";
+import { socket } from "../lib/socket";
 import { useLanguage } from "@/context/LanguageContext";
+
 
 export default function PatientForm() {
   const { lang } = useLanguage();
+
+  // ---------------- STATE ----------------
+  const [step, setStep] = useState(1);
+
   const initialForm = {
     firstName: "",
-    middleName: "",
     lastName: "",
+    middleName: "",
     dob: "",
     gender: "",
     phone: "",
     email: "",
     address: "",
     language: "",
-    nationality: "",
     religion: "",
+    nationality: "",
     emergencyName: "",
     emergencyRelation: "",
     emergencyPhone: "",
-    
+    addressLine1: "",
+    subDistrict: "",
+    district: "",
+    province: "",
+    postalCode: "",
   };
 
   const [form, setForm] = useState(initialForm);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+
+  // ---------------- TEXT ----------------
   const text = {
   en: {
+    step: "Step",
+    next: "Next",
+    back: "Back",
     title: "Patient Form",
     firstName: "First Name",
     middleName: "Middle Name",
@@ -37,12 +53,15 @@ export default function PatientForm() {
     female: "Female",
     other: "Other",
     nationality: "Nationality",
+    dob: "Date of Birth",
     phone: "Phone",
     email: "Email",
-    language: "Preferred Language",
-    address: "Address",
+    
     religion: "Religion",
     emergency: "Emergency Contact",
+    emergencyName: "Emergency Contact Name",
+    emergencyRelation: "Relationship",
+    emergencyPhone: "Emergency Phone",
     submit: "Submit",
     submitting: "Submitting...",
     errorFirstName: "First name is required",
@@ -51,21 +70,32 @@ export default function PatientForm() {
     errorEmail: "Invalid email format",
     errorPhone: "Phone must be 10 digits",
     errorDob: "Date of Birth is required",
-    errorEmergency: "Emergency phone must be 10 digits",
     selectLanguage: "Select Language",
-    errorAddress: "Address is required",
+    errorAddressLine1: "Address is required",
     errorLanguage: "Language is required",
     errorReligion: "Religion is required",
+    errorNationality: "Nationality is required",
+    errorSubDistrict: "Sub-district is required",
+    errorDistrict: "District is required",
+    errorProvince: "Province is required",
+    errorPostalCode: "Postal Code is required",
     selectGender: "Select Gender",
     english: "English",
     thai: "Thai",
     FillIn: "Please fill in your details ",
-    emergencyName: "Emergency Contact Name",
-    emergencyRelation: "Relationship",
-    emergencyPhone: "Emergency Phone",
+    FillInOption: "Please fill in your details (optional)",
+    addressLine1: "Address (House No., Village, Alley)",
+    subDistrict: "Sub-district",
+    district: "District",
+    province: "Province",
+    postalCode: "Postal Code",
+    
     
   },
   th: {
+    step: "ขั้นตอน",
+    next: "ถัดไป",
+    back: "ย้อนกลับ",
     title: "แบบฟอร์มผู้ป่วย",
     firstName: "ชื่อ",
     middleName: "ชื่อกลาง",
@@ -75,12 +105,15 @@ export default function PatientForm() {
     female: "หญิง",
     other: "อื่นๆ",
     nationality: "สัญชาติ",
+    dob: "วันที่เกิด",
     phone: "เบอร์โทร",
     email: "อีเมล",
-    language: "ภาษาที่ใช้",
     address: "ที่อยู่",
     religion: "ศาสนา",
     emergency: "ข้อมูลติดต่อฉุกเฉิน",
+    emergencyName: "ชื่อผู้ติดต่อฉุกเฉิน",
+    emergencyRelation: "ความสัมพันธ์",
+    emergencyPhone: "เบอร์โทรฉุกเฉิน",
     submit: "ยืนยัน",
     submitting: "กำลังส่ง...",
     errorFirstName: "กรุณากรอกชื่อ",
@@ -88,222 +121,400 @@ export default function PatientForm() {
     errorGender: "กรุณาเลือกเพศให้ถูกต้อง",
     errorEmail: "รูปแบบอีเมลไม่ถูกต้อง",
     errorPhone: "กรุณากรอกเบอร์ 10 หลัก",
-    errorDob: "กรุณากรอก วัน/เดือน/ปี ที่เกิด",
-    errorEmergency: "เบอร์ฉุกเฉินต้องเป็น 10 หลัก",
-    errorAddress: "กรุณากรอกที่อยู่",
+    errorDob: "กรุณากรอก เดือน/วัน/ปี ที่เกิด",
+    errorAddressLine1: "กรุณากรอกที่อยู่",
     errorLanguage: "กรุณาเลือกภาษาที่ใช้",
     errorReligion: "กรุณากรอกศาสนา",
+    errorNationality: "กรุณากรอกสัญชาติ",
+    errorSubDistrict: "กรุณากรอกตำบล",
+    errorDistrict: "กรุณากรอกอำเภอ",
+    errorProvince: "กรุณากรอกจังหวัด",
+    errorPostalCode: "กรุณากรอกรหัสไปรษณีย์",
     selectLanguage: "กรุณาเลือกภาษา",
     selectGender: "กรุณาเลือกเพศ",
     english: "ภาษาอังกฤษ",
     thai: "ภาษาไทย",
     FillIn: "กรุณากรอกข้อมูลของคุณ",
-    emergencyName: "ชื่อผู้ติดต่อฉุกเฉิน",
-    emergencyRelation: "ความสัมพันธ์",
-    emergencyPhone: "เบอร์โทรฉุกเฉิน",
+    FillInOption: "กรุณากรอกข้อมูลของคุณ (ไม่บังคับ)",
+    addressLine1: "ที่อยู่ (บ้านเลขที่, หมู่บ้าน, ซอย)",
+    subDistrict: "ตำบล",
+    district: "อำเภอ",
+    province: "จังหวัด",
+    postalCode: "รหัสไปรษณีย์",
+    
+    
   },
 };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
+  // ---------------- HANDLERS ----------------
+  const handleChange = (e: any) => {
+  const { name, value } = e.target;
+  const updatedForm = { ...form, [name]: value };
+  setForm(updatedForm);
+  setError("");
+
+  // ยิง event realtime
+  if (name === "firstName" || name === "lastName") {
+    socket.emit("patient-active", {
+      firstName: updatedForm.firstName,
+      lastName: updatedForm.lastName,
     });
-    setError("");
-  };
-
-  const validate = () => {
-  if (!form.firstName) {
-    return text[lang].errorFirstName;
   }
 
-  if (!form.lastName) {
-    return text[lang].errorLastName;
-  }
+  socket.emit("patient-typing", {
+    firstName: updatedForm.firstName,
+    lastName: updatedForm.lastName,
+    field: name,
+  });
 
-  if (!form.gender || !form.gender.match(/^(Male|Female|Other)$/)) {
-    return text[lang].errorGender;
-  }
+  // debounce stop typing
+  clearTimeout((window as any).typingTimeout);
+  (window as any).typingTimeout = setTimeout(() => {
+    socket.emit("patient-stop-typing");
+  }, 1000);
+};
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(form.email)) {
-    return text[lang].errorEmail;
-  }
-
+  // ---------------- VALIDATION ----------------
+  const validateStep = () => {
   const phoneRegex = /^[0-9]{10}$/;
 
-  if (!phoneRegex.test(form.phone)) {
-    return text[lang].errorPhone;
+  if (step === 1) {
+    if (!form.firstName) return text[lang].errorFirstName;
+    if (!form.lastName) return text[lang].errorLastName;
   }
 
-  if (form.emergencyPhone && !phoneRegex.test(form.emergencyPhone)) {
-  return text[lang].errorEmergency;
+  if (step === 2) {
+    if (!form.dob) return text[lang].errorDob;
+    if (!form.gender) return text[lang].errorGender;
+    if (!form.nationality) return text[lang].errorNationality;
+    if (!form.religion) return text[lang].errorReligion;
+    if (!phoneRegex.test(form.phone)) return text[lang].errorPhone;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!form.email) return text[lang].errorEmail;
+    if (!emailRegex.test(form.email)) return text[lang].errorEmail;
   }
 
-  if (!form.dob) {
-    return text[lang].errorDob;
+  if (step === 3) {
+
+    if (!form.addressLine1.trim()) return text[lang].errorAddressLine1;
+    if (!form.subDistrict.trim()) return text[lang].errorSubDistrict;
+    if (!form.district.trim()) return text[lang].errorDistrict;
+    if (!form.province.trim()) return text[lang].errorProvince;
+    if (!form.postalCode.trim()) return text[lang].errorPostalCode;
   }
-
-  if (!form.address) {
-    return text[lang].errorAddress;
-  }
-
-  if (!form.language) {
-    return text[lang].errorLanguage;
-  }
-
-  if (!form.religion) {
-    return text[lang].errorReligion;
-  }
-
-
 
   return null;
 };
+
+
   
-  
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // ---------------- NAVIGATION ----------------
+  const nextStep = () => {
+  const err = validateStep();
+  if (err) return setError(err);
 
-    const validationError = validate();
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
+  setError("");
 
-    setError("");
-    setLoading(true);
+  // 🔥 ส่งข้อมูลของ step ปัจจุบันไป staff
+  socket.emit("patient-step", {
+    step: step,
+    data: form,
+  });
 
-    
-    socket.emit("new-patient", form);
+  setStep(step + 1);
+};
 
-    
-    setTimeout(() => {
-      setForm(initialForm);
-      setLoading(false);
-    }, 500);
-  };
+  const prevStep = () => setStep(step - 1);
 
+  // ---------------- SUBMIT ----------------
+  const handleSubmit = (e: any) => {
+  e?.preventDefault();
+
+  const err = validateStep(); // 🔥 เพิ่มตรงนี้
+  if (err) {
+    setError(err);
+    return;
+  }
+
+  setError("");
+  setLoading(true);
+
+  socket.emit("new-patient", form);
+
+  setTimeout(() => {
+    setForm(initialForm);
+    setStep(1); // (แนะนำให้ reset step ด้วย)
+    setLoading(false);
+  }, 500);
+};
+
+  // ---------------- UI ----------------
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-center">
-      {/* <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-5xl"> */}
-        <form onSubmit={handleSubmit} className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-5xl">
-          <h2 className="text-xl mb-4">Patient Form</h2>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl w-full max-w-xl shadow">
 
-        {error && (
-        <p className="text-red-500 mb-4 text-sm">{error}</p>
+        {/* Progress */}
+        <p className="mb-4 text-sm">
+          {text[lang].step} {step} / 3
+        </p>
+
+        {error && <p className="text-red-500 mb-3">{error}</p>}
+
+        {/* STEP 1 */}
+        {step === 1 && (
+          <>
+          <label htmlFor="firstName" className="block text-sm mb-1">
+            {text[lang].firstName}
+            <input
+              name="firstName"
+              placeholder={text[lang].FillIn}
+              value={form.firstName}
+              onChange={handleChange}
+              className="input mb-2"
+            />
+            </label>
+
+            <label htmlFor="middleName" className="block text-sm mb-1">
+              {text[lang].middleName}
+            <input
+              name="middleName"
+              placeholder={text[lang].FillInOption}
+              value={form.middleName}
+              onChange={handleChange}
+              className="input mb-2"
+            />
+            </label>
+            
+            <label htmlFor="lastName" className="block text-sm mb-1">
+              {text[lang].lastName}
+            <input
+              name="lastName"
+              placeholder={text[lang].FillIn}
+              value={form.lastName}
+              onChange={handleChange}
+              className="input"
+            />
+            </label>
+          </>
         )}
 
-      <div className="grid grid-cols-2 gap-4">
+        {/* STEP 2 */}
+        {step === 2 && (
+          <>
 
-        <label htmlFor="firstName" className="block text-sm mb-1">
-          {text[lang].firstName}
-        <input name="firstName" value={form.firstName} onChange={handleChange} placeholder={text[lang].FillIn} className="input" />
-        </label>
+            <label htmlFor="dob" className="block text-sm mb-1">
+              {text[lang].dob}
+            <input
+              type="date"
+              name="dob"
+              value={form.dob}
+              onChange={handleChange}
+              className="input mb-2"
+            />
+            </label>
 
-        <label htmlFor="middleName" className="block text-sm mb-1">
-          {text[lang].middleName}
-        <input name="middleName" value={form.middleName} onChange={handleChange} placeholder={text[lang].FillIn} className="input" />
-        </label>
+            <label htmlFor="gender" className="block text-sm mb-1">
+              {text[lang].gender}
+            <select
+              name="gender"
+              value={form.gender}
+              onChange={handleChange}
+              className="input mb-2"
+            >
+              <option value="">{text[lang].selectGender}</option>
+              <option value="Male">{text[lang].male}</option>
+              <option value="Female">{text[lang].female}</option>
+              <option value="Other">{text[lang].other}</option>
+            </select>
+            </label>
 
-        <label htmlFor="lastName" className="block text-sm mb-1">
-          {text[lang].lastName}
-          <input id="lastName" name="lastName" value={form.lastName} onChange={handleChange} placeholder={text[lang].FillIn} className="input"/>
-        </label>
+            <label htmlFor="nationality" className="block text-sm mb-1">
+              {text[lang].nationality}
+            <input
+              name="nationality"
+              placeholder={text[lang].FillIn}
+              value={form.nationality}
+              onChange={handleChange}
+              className="input mb-2"
+            />
+            </label>
 
+            <label htmlFor="religion" className="block text-sm mb-1">
+              {text[lang].religion}
+            <input
+              name="religion"
+              placeholder={text[lang].FillIn}
+              value={form.religion}
+              onChange={handleChange}
+              className="input mb-2"
+            />
+            </label>
 
+            <label htmlFor="phone" className="block text-sm mb-1">
+              {text[lang].phone}
+            <input
+              name="phone"
+              placeholder={text[lang].FillIn}
+              value={form.phone}
+              onChange={handleChange}
+              className="input mb-2"
+            />
+            </label>
 
-        <label htmlFor="dob" className="block text-sm mb-1">
-             {lang === "en" ? "Date of Birth" : "วันเกิด"}
-             <input name="dob" type="date" value={form.dob} onChange={handleChange} className="input col-span-2"/>
-        </label>
-        
-        <label  className="block text-sm mb-1">
-            {text[lang].gender}
-        <select name="gender" value={form.gender} onChange={handleChange} className="input">
-          <option value="">{text[lang].selectGender}</option>
-          <option value="Male">{text[lang].male}</option>
-          <option value="Female">{text[lang].female}</option>
-          <option value="Other">{text[lang].other}</option>
-          </select>
-        </label>
-          
-          <label  className="block text-sm mb-1">
-            {text[lang].nationality}
-          <input name="nationality" value={form.nationality} onChange={handleChange} placeholder={text[lang].FillIn} className="input" />
+            <label htmlFor="email" className="block text-sm mb-1">
+              {text[lang].email}
+            <input
+              name="email"
+              placeholder={text[lang].FillIn}
+              value={form.email}
+              onChange={handleChange}
+              className="input"
+              
+            />
+            </label>
+          </>
+        )}
+
+        {/* STEP 3 */}
+        {step === 3 && (
+          <>
+            <div className="space-y-4">
+        {/* Address Line 1 */}
+        <div>
+         <label className="block text-sm mb-1 font-medium">
+            {text[lang].addressLine1} {/* เช่น "ที่อยู่ (บ้านเลขที่, หมู่บ้าน, ซอย)" */}
           </label>
-          
-          <label  className="block text-sm mb-1">
-            {text[lang].phone}
-          <input name="phone" value={form.phone} onChange={handleChange} placeholder={text[lang].FillIn} className="input" inputMode="numeric" pattern="[0-9]*" />
-          </label>
+         <input
+            type="text"
+            name="addressLine1"
+            placeholder={text[lang].FillIn}
+            value={form.addressLine1}
+            onChange={handleChange}
+            className="input mb-2 w-full"
+            required
+         />
+       </div>
 
-          <label  className="block text-sm mb-1">
-            {text[lang].email}
-          <input name="email"  value={form.email} onChange={handleChange} placeholder={text[lang].FillIn} className="input" type="email" required  />
-          </label>
+       {/* แถวสำหรับ ตำบล, อำเภอ, จังหวัด (ใช้ Grid เพื่อความสวยงาม) */}
+       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+         <div>
+           <label className="block text-sm mb-1 font-medium">{text[lang].subDistrict}</label>
+           <input
+             type="text"
+             name="subDistrict"
+             placeholder={text[lang].FillIn}
+             value={form.subDistrict}
+             onChange={handleChange}
+             className="input mb-2 w-full"
+             required
+           />
+         </div>
+         <div>
+           <label className="block text-sm mb-1 font-medium">{text[lang].district}</label>
+           <input
+             type="text"
+             name="district"
+             placeholder={text[lang].FillIn}
+             value={form.district}
+             onChange={handleChange}
+             className="input mb-2 w-full"
+             required
+           />
+         </div>
+         <div>
+           <label className="block text-sm mb-1 font-medium">{text[lang].province}</label>
+           <input
+             type="text"
+             name="province"
+             placeholder={text[lang].FillIn}
+             value={form.province}
+             onChange={handleChange}
+             className="input mb-2 w-full"
+             required
+           />
+         </div>
+       </div>
 
-
-
-          <label className="flex flex-col text-sm mb-2">{text[lang].language}
-          <select name="language" value={form.language} onChange={handleChange} className="input mt-1">
-            <option value="">{text[lang].selectLanguage}</option>
-            <option value="th">{text[lang].thai}</option>
-            <option value="en">{text[lang].english}</option>
-           </select>
-          </label>
-
-          <label className="flex flex-col text-sm mb-2">
-             {text[lang].address}
-             <textarea name="address" value={form.address} onChange={handleChange} placeholder={text[lang].FillIn} className="input"/>
-          </label>
-
-          <label className="flex flex-col  text-sm mb-1">
-            {text[lang].religion}
-          <input name="religion" value={form.religion} onChange={handleChange} placeholder={text[lang].FillIn} className="input" />
-          </label>
-
-          <div className="col-span-2">
-    <p className="text-sm mb-1">{text[lang].emergency}</p>
-
-  <div className="grid grid-cols-3 gap-2">
-    <input
-      name="emergencyName"
-      value={form.emergencyName}
-      onChange={handleChange}
-      placeholder={text[lang].emergencyName}
-      className="input"
-    />
-  
-
-    <input
-      name="emergencyRelation"
-      value={form.emergencyRelation}
-      onChange={handleChange}
-      placeholder={text[lang].emergencyRelation}
-      className="input"
-    />
-
-    <input
-      name="emergencyPhone"
-      value={form.emergencyPhone}
-      onChange={handleChange}
-      placeholder={text[lang].emergencyPhone}
-      className="input"
-    />
-  </div>
-</div>
-
+       {/* Postal Code */}
+       <div className="w-full md:w-1/3">
+         <label className="block text-sm mb-1 font-medium">{text[lang].postalCode}</label>
+         <input
+           type="text"
+           name="postalCode"
+           placeholder={text[lang].FillIn}
+           value={form.postalCode}
+           onChange={handleChange}
+           className="input mb-2 w-full"
+           required
+         />
+       </div>
       </div>
 
-      <button disabled={loading} className={`mt-4 px-4 py-2 rounded text-white transition 
-      ${ loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
-    >
-          {loading ? "Submitting..." :  text[lang].submit}
+            <label htmlFor="emergencyName" className="block text-sm mb-1">
+              {text[lang].emergencyName}
+            
+            <input
+              name="emergencyName"
+              placeholder={text[lang].FillInOption}
+              value={form.emergencyName}
+              onChange={handleChange}
+              className="input mb-2"
+            />
+            </label>
+
+            <label htmlFor="emergencyRelation" className="block text-sm mb-1">
+              {text[lang].emergencyRelation}
+            <input
+              name="emergencyRelation"
+              placeholder={text[lang].FillInOption}
+              value={form.emergencyRelation}
+              onChange={handleChange}
+              className="input mb-2"
+            />
+            </label>
+
+            <label htmlFor="emergencyPhone" className="block text-sm mb-1">
+              {text[lang].emergencyPhone}
+            
+            <input
+              name="emergencyPhone"
+              placeholder={text[lang].FillInOption}
+              value={form.emergencyPhone}
+              onChange={handleChange}
+              className="input"
+            />
+            </label>
+          </>
+        )}
+
+        
+        {/* BUTTONS */}
+    <div className="flex justify-between mt-4">
+      {step > 1 && (
+        <button type="button" onClick={prevStep}>
+          {text[lang].back}
         </button>
-    </form>
+      )}
+
+     {step < 3 && (
+       <button type="button" onClick={nextStep}>
+          {text[lang].next}
+        </button>
+     )}
     </div>
-    // </div>
+
+    {/*  ปุ่ม Submit แยกออกมา อยู่นอก flex justify-between */}
+    {step === 3 && (
+      <div className="mt-2">
+        <button type="button"  onClick={handleSubmit} disabled={loading}>
+          {loading ? text[lang].submitting : text[lang].submit}
+        </button>
+      </div>
+    )}
+      </form>
+    </div>
   );
 }
