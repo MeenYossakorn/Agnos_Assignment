@@ -158,12 +158,19 @@ const [stepInfoList, setStepInfoList] = useState<StepData[]>([]);
 
     // STATUS_CODES
   if (patients.length === 0 && stepInfoList.length === 0) {
-    return <p className="text-gray-500">{t.noPatientData}</p>;
-  }
+  return (
+    <div className="min-h-screen bg-gray-100 p-3 sm:p-6">
+      <div className="bg-white p-5 sm:p-10 mx-0 sm:m-8 rounded-xl shadow space-y-4">
+       <h2 className="text-xl font-semibold text-[#1C60BF]">Staff View</h2> 
+      <p className="text-gray-500">{t.noPatientData}</p>
+      </div>
+    </div>
+  );
+}
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 ">
-    <div className="bg-white p-10 m-8 rounded-xl shadow space-y-4 ">
+    <div className="min-h-screen bg-gray-100 p-3 sm:p-6">
+    <div className="bg-white p-5 sm:p-10 mx-0 sm:m-8 rounded-xl shadow space-y-4">
       <h2 className="text-xl font-semibold text-[#1C60BF]">Staff View</h2>
 
       <div className="space-y-2">
@@ -216,7 +223,7 @@ const [stepInfoList, setStepInfoList] = useState<StepData[]>([]);
       {patients.map((data, index) => (
         
         <div key={index} className="border-b pb-4">
-          <div className="grid grid-cols-2 gap-3 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <p><strong>{t.firstName}</strong> {data.firstName}</p>
             <p><strong>{t.lastName}</strong> {data.lastName}</p>
             <p><strong>{t.middleName}</strong> {data.middleName || "-"}</p>
@@ -225,13 +232,13 @@ const [stepInfoList, setStepInfoList] = useState<StepData[]>([]);
             <p><strong>{t.phone}</strong> {data.phone}</p>
             <p><strong>{t.email}</strong> {data.email}</p>
 
-            <p className="col-span-2">
+            <p className="sm:col-span-2">
               <strong>{t.addressLine1}</strong> {data.addressLine1}, {data.subDistrict}, {data.district}, {data.province}, {data.postalCode}
             </p>
             <p><strong>{t.religion}</strong> {data.religion || "-"}</p>
             <p><strong>{t.nationality}</strong> {data.nationality || "-"}</p>
 
-            <p className="col-span-2">
+            <p className="sm:col-span-2">
               <strong>{t.emergency}</strong>{" "}
               {data.emergencyName
                 ? `${data.emergencyName} (${data.emergencyRelation}) - ${data.emergencyPhone}`

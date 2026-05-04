@@ -203,6 +203,8 @@ export default function PatientForm() {
     if (!form.district.trim()) return text[lang].errorDistrict;
     if (!form.province.trim()) return text[lang].errorProvince;
     if (!form.postalCode.trim()) return text[lang].errorPostalCode;
+    if (form.emergencyPhone && !phoneRegex.test(form.emergencyPhone)) 
+    return text[lang].errorPhone;
   }
 
   return null;
@@ -233,7 +235,7 @@ export default function PatientForm() {
   const handleSubmit = (e: any) => {
   e?.preventDefault();
 
-  const err = validateStep(); // 🔥 เพิ่มตรงนี้
+  const err = validateStep(); 
   if (err) {
     setError(err);
     return;
@@ -253,8 +255,8 @@ export default function PatientForm() {
 
   //  User interface 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white p-10 rounded-xl w-full max-w-xl shadow">
+    <div className="flex justify-center items-start sm:items-center min-h-screen bg-gray-100 px-4 py-6 sm:py-10">
+      <form onSubmit={handleSubmit} className="bg-white p-6 sm:p-10 rounded-xl w-full max-w-xl shadow">
 
         {/* Progress */}
         <p className="mb-4 text-xl text-[#1C60BF] font-semibold">
@@ -277,7 +279,7 @@ export default function PatientForm() {
               placeholder={text[lang].FillIn}
               value={form.firstName}
               onChange={handleChange}
-              className="input mb-2"
+              className="input w-full mb-2"
             />
             </label>
 
@@ -507,7 +509,7 @@ export default function PatientForm() {
           </>
         )}
 
-        <div className="flex justify-between mt-4">
+        <div className="flex justify-between mt-6 gap-3">
           {step > 1 && (
             <button
               type="button"
