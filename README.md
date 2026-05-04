@@ -2,7 +2,7 @@
 
 ---
 
-## English
+## English Language
 
 ### Overview
 This is a **hospital patient management system** application that allows patients to fill out medical forms and enables staff to monitor patient activities in real-time. Built with modern web technologies including Next.js, React, and Socket.IO for real-time communication.
@@ -125,7 +125,7 @@ ISC License - See LICENSE file for details
 
 ---
 
-## ไทย
+## ภาษาไทย
 
 ### ภาพรวม
 นี่คือแอปพลิเคชัน **ระบบจัดการข้อมูลผู้ป่วยโรงพยาบาล** ที่ช่วยให้ผู้ป่วยกรอกข้อมูลทางการแพทย์และเจ้าหน้าที่สามารถตรวจสอบกิจกรรมของผู้ป่วยแบบเรียลไทม์ (Real-time) โดยใช้ Next.js, React และ Socket.IO สำหรับการสื่อสารแบบเรียลไทม์
