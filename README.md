@@ -126,7 +126,7 @@ ISC License - See LICENSE file for details
 ### Design
 
 Figma :
-https://www.figma.com/design/uhxJMwYJaPoTFO2MdcHOLq/Untitled?node-id=0-1&t=VR0Uyc6htS1ZP1u0-1
+https://www.figma.com/design/uhxJMwYJaPoTFO2MdcHOLq/Agnos_assignment?node-id=0-1&t=VR0Uyc6htS1ZP1u0-1
 
 ---
 
@@ -253,4 +253,4 @@ ISC License - ดูไฟล์ LICENSE สำหรับรายละเอ
 ### การออกแบบ
 
 Figma :
-https://www.figma.com/design/uhxJMwYJaPoTFO2MdcHOLq/Untitled?node-id=0-1&t=VR0Uyc6htS1ZP1u0-1
+https://www.figma.com/design/uhxJMwYJaPoTFO2MdcHOLq/Agnos_assignment?node-id=0-1&t=VR0Uyc6htS1ZP1u0-1
