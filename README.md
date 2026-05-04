@@ -100,7 +100,7 @@ npm run dev
 
 5. **Open your browser:**
 patient_page : [http://localhost:3000/patient_page]
-staff_page : [http://localhost:staff_page]
+staff_page : [http://localhost:3000/staff_page]
 
 ### Available Scripts
 
@@ -222,7 +222,7 @@ npm run dev
 5. **เปิดเบราว์เซอร์ของคุณ:**
 ไปที่ 
 patient_page : [http://localhost:3000/patient_page]
-staff_page : [http://localhost:staff_page]
+staff_page : [http://localhost:3000/staff_page]
 
 ### Scripts ที่มีให้ใช้งาน
 
