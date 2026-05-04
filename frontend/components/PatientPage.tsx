@@ -56,7 +56,7 @@ export default function PatientForm() {
     dob: "Date of Birth",
     phone: "Phone",
     email: "Email",
-    
+    formDescription: "This form is used to collect patient information for registration and medical record purposes. Please fill in all required fields accurately.",
     religion: "Religion",
     emergency: "Emergency Contact",
     emergencyName: "Emergency Contact Name",
@@ -108,6 +108,7 @@ export default function PatientForm() {
     dob: "วันที่เกิด",
     phone: "เบอร์โทร",
     email: "อีเมล",
+    formDescription: "แบบฟอร์มนี้ใช้สำหรับกรอกข้อมูลผู้ป่วย เพื่อใช้ในการลงทะเบียนและจัดเก็บข้อมูลทางการแพทย์ กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง",
     address: "ที่อยู่",
     religion: "ศาสนา",
     emergency: "ข้อมูลติดต่อฉุกเฉิน",
@@ -270,7 +271,7 @@ export default function PatientForm() {
           
           <>
           <div className="mb-4">
-            <p >แบบฟอร์มนี้ใช้สำหรับกรอกข้อมูลผู้ป่วย เพื่อใช้ในการลงทะเบียนและจัดเก็บข้อมูลทางการแพทย์ กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง</p>
+            <p >{text[lang].formDescription}</p>
           </div>
           <label htmlFor="firstName" className="block text-sm mb-1">
             {text[lang].firstName}
