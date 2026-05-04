@@ -123,6 +123,11 @@ To learn more about the technologies used:
 ### License
 ISC License - See LICENSE file for details
 
+### Design
+
+Figma :
+https://www.figma.com/design/uhxJMwYJaPoTFO2MdcHOLq/Untitled?node-id=0-1&t=VR0Uyc6htS1ZP1u0-1
+
 ---
 
 ## ภาษาไทย
@@ -244,3 +249,8 @@ npm run lint     # รัน ESLint
 
 ### ใบอนุญาต
 ISC License - ดูไฟล์ LICENSE สำหรับรายละเอียด
+
+### การออกแบบ
+
+Figma :
+https://www.figma.com/design/uhxJMwYJaPoTFO2MdcHOLq/Untitled?node-id=0-1&t=VR0Uyc6htS1ZP1u0-1
