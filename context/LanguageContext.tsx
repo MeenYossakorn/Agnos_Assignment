@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 type LanguageContextType = {
   lang: "en" | "th";
   toggleLang: () => void;
+  setLang: (lang: "en" | "th") => void; // ✅ เพิ่มตรงนี้
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -24,8 +25,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("lang", newLang);
   };
 
+  //  wrap setLang for sync localStorage
+  const handleSetLang = (newLang: "en" | "th") => {
+    setLang(newLang);
+    localStorage.setItem("lang", newLang);
+  };
+
   return (
-    <LanguageContext.Provider value={{ lang, toggleLang }}>
+    <LanguageContext.Provider value={{ lang, toggleLang, setLang: handleSetLang }}>
       {children}
     </LanguageContext.Provider>
   );

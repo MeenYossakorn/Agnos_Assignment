@@ -1,9 +1,56 @@
 "use client";
 import { useEffect, useState } from "react";
 import { socket } from "../lib/socket";
+import { useLanguage } from "@/context/LanguageContext";
 
 
-// ---------------- TYPES ----------------
+const text = {
+  en: {
+    firstName: "First Name :",
+    middleName: "Middle Name :",
+    lastName: "Last Name :",
+    dob: "Date of Birth :",
+    gender: "Gender :",
+    phone: "Phone Number :",
+    email: "Email :",
+    nationality: "Nationality :",
+    activeStatus: "Active Status :",
+    typingStatus: "Typing Status :",
+    infoStatus: "Info Status :",
+    noActiveUser: "No active user",
+    isTyping: "is typing",
+    completedStep: "completed step",
+    noPatientData: "No patient data yet",
+    addressLine1: "Address :",
+    religion: "Religion :",
+    emergency: "Emergency :",
+  },
+  th: {
+    firstName: "ชื่อ :",
+    middleName: "ชื่อกลาง :",
+    lastName: "นามสกุล :",
+    dob: "วันเกิด :", 
+    gender: "เพศ :",
+    phone: "เบอร์โทร :",
+    email: "อีเมล :",
+    nationality: "สัญชาติ :",
+    addressLine1: "ที่อยู่ :",
+    religion: "ศาสนา :",
+    activeStatus: "สถานะผู้ใช้งาน :",
+    typingStatus: "สถานะการพิมพ์ :",
+    infoStatus: "สถานะข้อมูล :",
+    noActiveUser: "ไม่มีผู้ใช้งานขณะนี้",
+    isTyping: "กำลังพิมพ์",
+    completedStep: "ทำขั้นตอนที่",
+    noPatientData: "ยังไม่มีข้อมูลผู้ป่วย",
+    emergency: "ฉุกเฉิน :",
+    
+  },
+};
+
+
+
+// TYPES 
 type Patient = {
   firstName: string;
   middleName?: string;
@@ -19,6 +66,7 @@ type Patient = {
   postalCode: string;
   language?: string;
   religion?: string;
+  nationality: string,
 
   emergencyName?: string;
   emergencyRelation?: string;
@@ -32,8 +80,11 @@ type StepData = {
   data: Patient;
 };
 
-// ---------------- COMPONENT ----------------
+//  COMPONENT 
 export default function StaffView() {
+  const { lang } = useLanguage();          // ← เพิ่ม
+  const t = text[lang as "en" | "th"];
+
   const [patients, setPatients] = useState<Patient[]>([]);
 
   const [activePatients, setActivePatients] = useState<Array<{
@@ -49,7 +100,9 @@ export default function StaffView() {
 }>>([]);
 const [stepInfoList, setStepInfoList] = useState<StepData[]>([]);
 
-  // ---------------- SOCKET ----------------
+
+
+  //  SOCKET 
   useEffect(() => {
 
     // active patients update
@@ -105,15 +158,16 @@ const [stepInfoList, setStepInfoList] = useState<StepData[]>([]);
 
     // STATUS_CODES
   if (patients.length === 0 && stepInfoList.length === 0) {
-    return <p className="text-gray-500">No patient data yet</p>;
+    return <p className="text-gray-500">{t.noPatientData}</p>;
   }
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow space-y-4">
-      <h2 className="text-xl font-semibold">Staff View</h2>
+    <div className="min-h-screen bg-gray-100 p-6 ">
+    <div className="bg-white p-10 m-8 rounded-xl shadow space-y-4 ">
+      <h2 className="text-xl font-semibold text-[#1C60BF]">Staff View</h2>
 
       <div className="space-y-2">
-    <p className="text-sm text-gray-500">Active Status</p>
+    <p className="text-sm text-gray-500">{t.activeStatus}</p>
 
     {activePatients.length > 0 ? (
       <div className="space-y-1">
@@ -124,10 +178,10 @@ const [stepInfoList, setStepInfoList] = useState<StepData[]>([]);
         ))}
       </div>
     ) : (
-      <div className="text-sm text-red-500">No active user</div>
+      <div className="text-sm text-red-500">{t.noActiveUser}</div>
     )}
 
-    <p className="text-sm text-gray-500">Typing Status</p>
+    <p className="text-sm text-gray-500">{t.typingStatus}</p>
     {typingPatients.length > 0 ? (
       <div className="space-y-1">
         {typingPatients.map((patient) => (
@@ -135,13 +189,13 @@ const [stepInfoList, setStepInfoList] = useState<StepData[]>([]);
              <strong>
               {patient.firstName || "Someone"} {patient.lastName || ""}
             </strong>{" "}
-            is typing {patient.field && `(${patient.field})`}
+            {t.isTyping} {patient.field && `(${patient.field})`}
           </div>
         ))}
       </div>
     ) : null}
 
-      <p className="text-sm text-gray-500">Info Status</p>
+      <p className="text-sm text-gray-500">{t.infoStatus}</p>
      {stepInfoList.length > 0 &&(
       <div className="space-y-1">
         {stepInfoList.map((info, i) => (
@@ -149,7 +203,7 @@ const [stepInfoList, setStepInfoList] = useState<StepData[]>([]);
             <strong>
           {info.data.firstName} {info.data.lastName}
         </strong>{" "}
-        completed step {info.step}
+        {t.completedStep} {info.step}
         </div>
       ))}
       </div>
@@ -157,25 +211,28 @@ const [stepInfoList, setStepInfoList] = useState<StepData[]>([]);
     </div>
 
 
-      {/* ---------------- PATIENT LIST ---------------- */}
+      
+       {/* PATIENT LIST */}
       {patients.map((data, index) => (
+        
         <div key={index} className="border-b pb-4">
           <div className="grid grid-cols-2 gap-3 text-sm">
-            <p><strong>First Name:</strong> {data.firstName}</p>
-            <p><strong>Last Name:</strong> {data.lastName}</p>
-            <p><strong>Middle Name:</strong> {data.middleName || "-"}</p>
-            <p><strong>Date of Birth:</strong> {data.dob}</p>
-            <p><strong>Gender:</strong> {data.gender}</p>
-            <p><strong>Phone Number:</strong> {data.phone}</p>
-            <p><strong>Email:</strong> {data.email}</p>
+            <p><strong>{t.firstName}</strong> {data.firstName}</p>
+            <p><strong>{t.lastName}</strong> {data.lastName}</p>
+            <p><strong>{t.middleName}</strong> {data.middleName || "-"}</p>
+            <p><strong>{t.dob}</strong> {data.dob}</p>
+            <p><strong>{t.gender}</strong> {data.gender}</p>
+            <p><strong>{t.phone}</strong> {data.phone}</p>
+            <p><strong>{t.email}</strong> {data.email}</p>
 
             <p className="col-span-2">
-              <strong>Address:</strong> {data.addressLine1}, {data.subDistrict}, {data.district}, {data.province}, {data.postalCode}
+              <strong>{t.addressLine1}</strong> {data.addressLine1}, {data.subDistrict}, {data.district}, {data.province}, {data.postalCode}
             </p>
-            <p><strong>Religion:</strong> {data.religion || "-"}</p>
+            <p><strong>{t.religion}</strong> {data.religion || "-"}</p>
+            <p><strong>{t.nationality}</strong> {data.nationality || "-"}</p>
 
             <p className="col-span-2">
-              <strong>Emergency:</strong>{" "}
+              <strong>{t.emergency}</strong>{" "}
               {data.emergencyName
                 ? `${data.emergencyName} (${data.emergencyRelation}) - ${data.emergencyPhone}`
                 : "-"}
@@ -183,6 +240,7 @@ const [stepInfoList, setStepInfoList] = useState<StepData[]>([]);
           </div>
         </div>
       ))}
+    </div>
     </div>
   );
 }

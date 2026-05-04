@@ -8,11 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 export default function PatientPage() {
   const { lang } = useLanguage();
   return (
-    <div className="p-10">
-      <div className="flex justify-end mb-4">
-        <LanguageSwitcher />
-      </div>
-
+    <div >
       <PatientForm />
     </div>
   );

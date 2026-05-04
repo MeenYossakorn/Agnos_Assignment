@@ -8,7 +8,7 @@ import { useLanguage } from "@/context/LanguageContext";
 export default function PatientForm() {
   const { lang } = useLanguage();
 
-  // ---------------- STATE ----------------
+  //  state
   const [step, setStep] = useState(1);
 
   const initialForm = {
@@ -38,7 +38,7 @@ export default function PatientForm() {
   const [loading, setLoading] = useState(false);
 
 
-  // ---------------- TEXT ----------------
+  //  Text mapping
   const text = {
   en: {
     step: "Step",
@@ -146,7 +146,7 @@ export default function PatientForm() {
   },
 };
 
-  // ---------------- HANDLERS ----------------
+  //  HANDLERS 
   const handleChange = (e: any) => {
   const { name, value } = e.target;
   const updatedForm = { ...form, [name]: value };
@@ -174,7 +174,7 @@ export default function PatientForm() {
   }, 1000);
 };
 
-  // ---------------- VALIDATION ----------------
+  //  VALIDATION 
   const validateStep = () => {
   const phoneRegex = /^[0-9]{10}$/;
 
@@ -211,14 +211,14 @@ export default function PatientForm() {
 
   
 
-  // ---------------- NAVIGATION ----------------
+  //  NAVIGATION 
   const nextStep = () => {
   const err = validateStep();
   if (err) return setError(err);
 
   setError("");
 
-  // 🔥 ส่งข้อมูลของ step ปัจจุบันไป staff
+
   socket.emit("patient-step", {
     step: step,
     data: form,
@@ -229,7 +229,7 @@ export default function PatientForm() {
 
   const prevStep = () => setStep(step - 1);
 
-  // ---------------- SUBMIT ----------------
+  //  SUBMIT 
   const handleSubmit = (e: any) => {
   e?.preventDefault();
 
@@ -246,18 +246,18 @@ export default function PatientForm() {
 
   setTimeout(() => {
     setForm(initialForm);
-    setStep(1); // (แนะนำให้ reset step ด้วย)
+    setStep(1); 
     setLoading(false);
   }, 500);
 };
 
-  // ---------------- UI ----------------
+  //  User interface 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl w-full max-w-xl shadow">
+      <form onSubmit={handleSubmit} className="bg-white p-10 rounded-xl w-full max-w-xl shadow">
 
         {/* Progress */}
-        <p className="mb-4 text-sm">
+        <p className="mb-4 text-xl text-[#1C60BF] font-semibold">
           {text[lang].step} {step} / 3
         </p>
 
@@ -265,7 +265,11 @@ export default function PatientForm() {
 
         {/* STEP 1 */}
         {step === 1 && (
+          
           <>
+          <div className="mb-4">
+            <p >แบบฟอร์มนี้ใช้สำหรับกรอกข้อมูลผู้ป่วย เพื่อใช้ในการลงทะเบียนและจัดเก็บข้อมูลทางการแพทย์ กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง</p>
+          </div>
           <label htmlFor="firstName" className="block text-sm mb-1">
             {text[lang].firstName}
             <input
@@ -304,7 +308,9 @@ export default function PatientForm() {
         {/* STEP 2 */}
         {step === 2 && (
           <>
-
+            <div className="mb-4">
+              <p >แบบฟอร์มนี้ใช้สำหรับกรอกข้อมูลผู้ป่วย เพื่อใช้ในการลงทะเบียนและจัดเก็บข้อมูลทางการแพทย์ กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง</p>
+            </div>
             <label htmlFor="dob" className="block text-sm mb-1">
               {text[lang].dob}
             <input
@@ -382,138 +388,154 @@ export default function PatientForm() {
         {step === 3 && (
           <>
             <div className="space-y-4">
-        {/* Address Line 1 */}
-        <div>
-         <label className="block text-sm mb-1 font-medium">
-            {text[lang].addressLine1} {/* เช่น "ที่อยู่ (บ้านเลขที่, หมู่บ้าน, ซอย)" */}
-          </label>
-         <input
-            type="text"
-            name="addressLine1"
-            placeholder={text[lang].FillIn}
-            value={form.addressLine1}
-            onChange={handleChange}
-            className="input mb-2 w-full"
-            required
-         />
-       </div>
+              <div className="mb-4">
+                <p >แบบฟอร์มนี้ใช้สำหรับกรอกข้อมูลผู้ป่วย เพื่อใช้ในการลงทะเบียนและจัดเก็บข้อมูลทางการแพทย์ กรุณากรอกข้อมูลให้ครบถ้วนและถูกต้อง</p>
+              </div>
+              {/* Address Line 1 */}
+              <div>
+                <label className="block text-sm mb-1 font-medium">
+                  {text[lang].addressLine1}
+                </label>
+                <input
+                  type="text"
+                  name="addressLine1"
+                  placeholder={text[lang].errorAddressLine1}
+                  value={form.addressLine1}
+                  onChange={handleChange}
+                  className="input mb-2 w-full"
+                  required
+                />
+              </div>
 
-       {/* แถวสำหรับ ตำบล, อำเภอ, จังหวัด (ใช้ Grid เพื่อความสวยงาม) */}
-       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-         <div>
-           <label className="block text-sm mb-1 font-medium">{text[lang].subDistrict}</label>
-           <input
-             type="text"
-             name="subDistrict"
-             placeholder={text[lang].FillIn}
-             value={form.subDistrict}
-             onChange={handleChange}
-             className="input mb-2 w-full"
-             required
-           />
-         </div>
-         <div>
-           <label className="block text-sm mb-1 font-medium">{text[lang].district}</label>
-           <input
-             type="text"
-             name="district"
-             placeholder={text[lang].FillIn}
-             value={form.district}
-             onChange={handleChange}
-             className="input mb-2 w-full"
-             required
-           />
-         </div>
-         <div>
-           <label className="block text-sm mb-1 font-medium">{text[lang].province}</label>
-           <input
-             type="text"
-             name="province"
-             placeholder={text[lang].FillIn}
-             value={form.province}
-             onChange={handleChange}
-             className="input mb-2 w-full"
-             required
-           />
-         </div>
-       </div>
+              <div>
+                <label className="block text-sm mb-1 font-medium">
+                  {text[lang].subDistrict}
+                </label>
+                <input
+                  name="subDistrict"
+                  placeholder={text[lang].errorSubDistrict}
+                  value={form.subDistrict}
+                  onChange={handleChange}
+                  className="input w-full"
+                />
+              </div>
 
-       {/* Postal Code */}
-       <div className="w-full md:w-1/3">
-         <label className="block text-sm mb-1 font-medium">{text[lang].postalCode}</label>
-         <input
-           type="text"
-           name="postalCode"
-           placeholder={text[lang].FillIn}
-           value={form.postalCode}
-           onChange={handleChange}
-           className="input mb-2 w-full"
-           required
-         />
-       </div>
-      </div>
+              <div>
+                <label className="block text-sm mb-1 font-medium">
+                  {text[lang].district}
+                </label>
+                <input
+                  name="district"
+                  placeholder={text[lang].errorDistrict}
+                  value={form.district}
+                  onChange={handleChange}
+                  className="input w-full"
+                />
+              </div>
 
-            <label htmlFor="emergencyName" className="block text-sm mb-1">
-              {text[lang].emergencyName}
-            
-            <input
-              name="emergencyName"
-              placeholder={text[lang].FillInOption}
-              value={form.emergencyName}
-              onChange={handleChange}
-              className="input mb-2"
-            />
-            </label>
+              <div>
+                <label className="block text-sm mb-1 font-medium">
+                  {text[lang].province}
+                </label>
+                <input
+                  name="province"
+                  placeholder={text[lang].errorProvince}
+                  value={form.province}
+                  onChange={handleChange}
+                  className="input w-full"
+                />
+              </div>
 
-            <label htmlFor="emergencyRelation" className="block text-sm mb-1">
-              {text[lang].emergencyRelation}
-            <input
-              name="emergencyRelation"
-              placeholder={text[lang].FillInOption}
-              value={form.emergencyRelation}
-              onChange={handleChange}
-              className="input mb-2"
-            />
-            </label>
+              <div>
+                <label className="block text-sm mb-1 font-medium">
+                  {text[lang].postalCode}
+                </label>
+                <input
+                  name="postalCode"
+                  placeholder={text[lang].errorPostalCode}
+                  value={form.postalCode}
+                  onChange={handleChange}
+                  className="input w-full"
+                />
+              </div>
 
-            <label htmlFor="emergencyPhone" className="block text-sm mb-1">
-              {text[lang].emergencyPhone}
-            
-            <input
-              name="emergencyPhone"
-              placeholder={text[lang].FillInOption}
-              value={form.emergencyPhone}
-              onChange={handleChange}
-              className="input"
-            />
-            </label>
+              
+              
+              {/* Emergency Name */}
+              <div>
+                <label className="block text-sm mb-1 font-medium">
+                  {text[lang].emergencyName}
+                </label>
+                <input
+                  name="emergencyName"
+                  placeholder={text[lang].FillInOption}
+                  value={form.emergencyName}
+                  onChange={handleChange}
+                  className="input w-full"
+                />
+              </div>
+
+              {/* Emergency Relation */}
+              <div>
+                <label className="block text-sm mb-1 font-medium">
+                  {text[lang].emergencyRelation}
+                </label>
+                <input
+                  name="emergencyRelation"
+                  placeholder={text[lang].FillInOption}
+                  value={form.emergencyRelation}
+                  onChange={handleChange}
+                  className="input w-full"
+                />
+              </div>
+
+              {/* Emergency Phone */}
+              <div>
+                <label className="block text-sm mb-1 font-medium">
+                  {text[lang].emergencyPhone}
+                </label>
+                <input
+                  name="emergencyPhone"
+                  placeholder={text[lang].FillInOption}
+                  value={form.emergencyPhone}
+                  onChange={handleChange}
+                  className="input w-full"
+                />
+              </div>
+
+            </div>
           </>
         )}
 
-        
-        {/* BUTTONS */}
-    <div className="flex justify-between mt-4">
-      {step > 1 && (
-        <button type="button" onClick={prevStep}>
-          {text[lang].back}
-        </button>
-      )}
+        <div className="flex justify-between mt-4">
+          {step > 1 && (
+            <button
+              type="button"
+              onClick={prevStep}
+              className="px-4 py-2 rounded-lg bg-[#1C60BF] text-white hover:bg-[#174EA6] transition hover:scale-105 hover:-translate-y-0.5  duration-200"
+            >
+              {text[lang].back}
+            </button>
+          )}
 
-     {step < 3 && (
-       <button type="button" onClick={nextStep}>
-          {text[lang].next}
-        </button>
-     )}
-    </div>
-
-    {/*  ปุ่ม Submit แยกออกมา อยู่นอก flex justify-between */}
-    {step === 3 && (
-      <div className="mt-2">
-        <button type="button"  onClick={handleSubmit} disabled={loading}>
-          {loading ? text[lang].submitting : text[lang].submit}
-        </button>
-      </div>
-    )}
+          {step < 3 ? (
+            <button
+              type="button"
+              onClick={nextStep}
+              className="px-4 py-2 rounded-lg bg-[#1C60BF] text-white hover:bg-[#174EA6] transition hover:scale-105 hover:-translate-y-0.5  duration-200"
+            >
+              {text[lang].next}
+            </button>
+          ) : (
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-4 py-2 rounded-lg bg-[#1C60BF] text-white hover:bg-[#174EA6]  transition hover:scale-105 hover:-translate-y-0.5  duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? text[lang].submitting : text[lang].submit}
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );

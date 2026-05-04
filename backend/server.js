@@ -20,21 +20,24 @@ const typingPatients = new Map();
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
-  socket.on("patient-active", (data) => {
-  activePatients.set(socket.id, {
-    socketId: socket.id,
-    ...data
-  });
-  io.emit("active-patients-list", Array.from(activePatients.values()));
-});
+  socket.emit("active-patients-list", Array.from(activePatients.values()));
+  socket.emit("typing-patients-list", Array.from(typingPatients.values()));
 
-  // ✅ submit
+  socket.on("patient-active", (data) => {
+    activePatients.set(socket.id, {
+      socketId: socket.id,
+      ...data
+    });
+    io.emit("active-patients-list", Array.from(activePatients.values()));
+  });
+
+  // submit
   socket.on("new-patient", (data) => {
     console.log("New patient:", data);
     io.emit("receive-patient", data);
   });
 
-  // 🔥 typing realtime
+  // typing realtime
   socket.on("patient-typing", (data) => {
     typingPatients.set(socket.id, {
       socketId: socket.id,
@@ -43,13 +46,13 @@ io.on("connection", (socket) => {
     io.emit("typing-patients-list", Array.from(typingPatients.values()));
   });
 
-  // 🔥 stop typing
+  // stop typing
   socket.on("patient-stop-typing", () => {
     typingPatients.delete(socket.id);
     io.emit("typing-patients-list", Array.from(typingPatients.values()));
   });
 
-  // 🔥 step progress
+  // step progress
   socket.on("patient-step", (data) => {
     socket.broadcast.emit("patient-step", data);
   });
