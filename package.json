@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start -p $PORT",
+  "lint": "eslint"
+},
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",
