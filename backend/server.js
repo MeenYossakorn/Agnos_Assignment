@@ -16,6 +16,7 @@ const io = new Server(server, {
 
 const activePatients = new Map();
 const typingPatients = new Map();
+const PORT = process.env.PORT || 4000;
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
@@ -66,6 +67,6 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(4000, () => {
-  console.log("Server listening on port 4000");
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server listening on port ${PORT}`);
 });
