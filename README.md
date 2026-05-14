@@ -2,7 +2,7 @@
 
 ---
 
-## 🇬🇧 English
+## English Language
 
 ### Overview
 This is a **hospital patient management system** application that allows patients to fill out medical forms and enables staff to monitor patient activities in real-time. Built with modern web technologies including Next.js, React, and Socket.IO for real-time communication.
@@ -100,7 +100,7 @@ npm run dev
 
 5. **Open your browser:**
 patient_page : [http://localhost:3000/patient_page]
-staff_page : [http://localhost:staff_page]
+staff_page : [http://localhost:3000/staff_page]
 
 ### Available Scripts
 
@@ -123,9 +123,14 @@ To learn more about the technologies used:
 ### License
 ISC License - See LICENSE file for details
 
+### Design
+
+Figma :
+https://www.figma.com/design/uhxJMwYJaPoTFO2MdcHOLq/Agnos_assignment?node-id=0-1&t=VR0Uyc6htS1ZP1u0-1
+
 ---
 
-## 🇹🇭 ไทย
+## ภาษาไทย
 
 ### ภาพรวม
 นี่คือแอปพลิเคชัน **ระบบจัดการข้อมูลผู้ป่วยโรงพยาบาล** ที่ช่วยให้ผู้ป่วยกรอกข้อมูลทางการแพทย์และเจ้าหน้าที่สามารถตรวจสอบกิจกรรมของผู้ป่วยแบบเรียลไทม์ (Real-time) โดยใช้ Next.js, React และ Socket.IO สำหรับการสื่อสารแบบเรียลไทม์
@@ -222,7 +227,7 @@ npm run dev
 5. **เปิดเบราว์เซอร์ของคุณ:**
 ไปที่ 
 patient_page : [http://localhost:3000/patient_page]
-staff_page : [http://localhost:staff_page]
+staff_page : [http://localhost:3000/staff_page]
 
 ### Scripts ที่มีให้ใช้งาน
 
@@ -244,3 +249,8 @@ npm run lint     # รัน ESLint
 
 ### ใบอนุญาต
 ISC License - ดูไฟล์ LICENSE สำหรับรายละเอียด
+
+### การออกแบบ
+
+Figma :
+https://www.figma.com/design/uhxJMwYJaPoTFO2MdcHOLq/Agnos_assignment?node-id=0-1&t=VR0Uyc6htS1ZP1u0-1
